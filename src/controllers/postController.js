@@ -30,4 +30,22 @@ export default class PostController{
             res.status(500).json({msg:"Erro no servidor"});
         }
     }
+
+    async myPosts(req,res){
+        const secret = "teste";
+        const token = req.headers['authorization'].split(' ')[1];
+        const decoded = jsonwebtoken.verify(token,secret);
+        try{
+            const user = await User.findByPk(decoded.id);
+            const total = await Post.findAndCountAll({where:{author_id:user.dataValues.id}});
+            if(total.count > 0 ){
+                const posts = await Post.findAll({where:{author_id:user.dataValues.id}});
+                res.status(200).json(posts);
+            }else{
+                res.status(404).json({msg:"Você não possui posts cadastrados"})
+            }
+        }catch(error){
+            res.status(500).json({msg:"Erro no servidor"});
+        }
+    }
 }

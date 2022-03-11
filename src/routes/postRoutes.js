@@ -8,5 +8,6 @@ postRouter.post('/add',checkToken,post.newPost)
 
 postRouter.get('/',post.viewPosts);
 
+postRouter.get('/myPosts',checkToken,post.myPosts);
 
 export default postRouter;
